@@ -1,4 +1,4 @@
-# ALC_Robot
+# ALC Robot
 Automated Litter Collector Robot
 
 Team:
@@ -6,3 +6,4 @@ Team:
 	Ricardo Martinez
 	Joseph Sheff
 	ALbert Andrade
+ 
