@@ -2,7 +2,7 @@
 Automated Litter Collector Robot
 
 Team:
-	Walter Warneke
-	Ricardo Martinez
-	Joseph Sheff
-	ALbert Andrade
+	Walter Warneke, 
+	Ricardo Martinez, 
+	Joseph Sheff, 
+	Albert Andrade, 
