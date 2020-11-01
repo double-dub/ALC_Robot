@@ -1,0 +1,2 @@
+This text file was added using ssh-key from github to a pc.
+
