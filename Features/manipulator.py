@@ -47,29 +47,67 @@ while True:
     time.sleep(1)
 '''
 def rest():
-	#keeps base joint straight forward
-	pwm.set_pwm(0, 0, servo_min)
-	#
-	pwm.set_pwm(1, 0, servo_min)
+    #keeps base joint straight forward
+    pwm.set_pwm(0, 0, servo_min)
+    #Joint one at resting
+    pwm.set_pwm(1, 0, servo_min)
+    #Joint two at resting
+    pwm.set_pwm(2, 0, servo_min)
+    #Joint three gripper at resting
+    pwm.set_pwm(3, 0, servo_min)
 
 def extend():
-	pwm.set_pwm(1, 0, servo_min)
-	pwm.set_pwm(0, 0, servo_min)
-	i = 180
-	j = 180
-	while (10<=i<=180):
-		setServoAngle2(pin10, i)
+    #pwm.set_pwm(1, 0, servo_min)
+    #pwm.set_pwm(2, 0, servo_min)
+    i = 180
+    j = 180
+    while (10<=i<=180):
+        
   
-		if (80<=j<=180):
-			setServoAngle3(pin11, j)
-			setServoAngle2(pin10, i)
-			j-=1
-			i-=1
-			print("i=:",i)
-			print("j=:",j)
-		else:
-			print("i=:",i)
-			print("j=:",j)
-			i -=1
-		if i ==0:
-			break
+        if (80<=j<=180):
+            setServoAngle3(pin11, j)
+            setServoAngle2(pin10, i)
+            j-=1
+            i-=1
+            print("i=:",i)
+            print("j=:",j)
+            time.sleep(.25)
+        else:
+            #whichever joint is still moving after one of them stops
+            pwm.set_pwm(2, 0, j)
+            print("i=:",i)
+            print("j=:",j)
+            i -=1
+            time.sleep(.25)
+        if i ==0:
+            break
+
+def grab():
+    #sets servo angle of gripper to squeeze object
+    pwm.set_pwm(3, 0, #)
+
+def retrieve():
+    #work backwards from grab positions
+    i = 180
+    j = 180
+    while (10<=i<=180):
+        
+  
+        if (80<=j<=180):
+            setServoAngle3(pin11, j)
+            setServoAngle2(pin10, i)
+            j-=1
+            i-=1
+            print("i=:",i)
+            print("j=:",j)
+            time.sleep(.25)
+        else:
+            #whichever joint is still moving after one of them stops
+            pwm.set_pwm(2, 0, j)
+            print("i=:",i)
+            print("j=:",j)
+            i -=1
+            time.sleep(.25)
+        if i ==0:
+            break
+
