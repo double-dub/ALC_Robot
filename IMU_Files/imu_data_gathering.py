@@ -37,7 +37,7 @@ while run:
     if len(angle_vals) == 10:
         run = False
 
-    time.sleep(0.1)
+    time.sleep(0.005)
     
 print(angle_vals)
 
