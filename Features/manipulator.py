@@ -49,35 +49,35 @@ def rest():
     #keeps base joint straight forward
     #pwm.set_pwm(0, 0, servo_min)
     #Joint one at resting
-    pwm.set_pwm(13, 0, 400)
+    pwm.set_pwm(13, 0, 200)
     #Joint two at resting
-    #pwm.set_pwm(2, 0, servo_min)
+    pwm.set_pwm(14, 0, 150)
     #Joint three gripper at resting
-    #pwm.set_pwm(3, 0, servo_min)
+    pwm.set_pwm(15, 4095, 0)
 
 def extend():
     #pwm.set_pwm(1, 0, servo_min)
     #pwm.set_pwm(2, 0, servo_min)
-    i = 180
-    j = 180
-    while (10<=i<=180):
+    i = 150
+    j = 150
+    while (150<=i<=600):
         
   
-        if (80<=j<=180):
-            setServoAngle3(pin11, j)
-            setServoAngle2(pin10, i)
-            j-=1
-            i-=1
+        if (150<=j<=290):
+            pwm.set_pwm(13, 0, i)
+            pwm.set_pwm(14, 0, j)
+            j+=1
+            i+=1
             print("i=:",i)
             print("j=:",j)
-            time.sleep(.25)
+            time.sleep(.009)
         else:
             #whichever joint is still moving after one of them stops
-            pwm.set_pwm(2, 0, j)
+            pwm.set_pwm(13, 0, i)
             print("i=:",i)
             print("j=:",j)
-            i -=1
-            time.sleep(.25)
+            i +=1
+            time.sleep(.009)
         if i ==0:
             break
 
@@ -109,29 +109,41 @@ def retrieve():
             time.sleep(.25)
         if i ==0:
             break
-#rest()
+rest()
+extend()
+
 while True:
     value = input()
     if value == 'w':
         print("Forward")
-        #rest()
+        '''
+        extend()
         
-        pwm.set_pwm(13, 0, 150)
+        #pwm.set_pwm(14, 0, 150)
         time.sleep(2)
         #sends servo a low signal so that it relaxes the servo
-        pwm.set_pwm(13, 0, 600)
+        #pwm.set_pwm(14, 0, 400)
+        time.sleep(2)
+        #pwm.set_pwm(13, 4095, 0)
+        print("\n")
+    elif value == 's':
+        #backward()
+        pwm.set_pwm(14, 0, 150)
+        time.sleep(2)
+        pwm.set_pwm(14, 0, 600)
         time.sleep(2)
 
-        pwm.set_pwm(13, 4095, 0)
-        print("\n")
-        '''
-    elif value == 's':
-        backward()
         print("Backward")
         print("\n")
+        
     elif value == 'd':
         print("Right")
-        right()
+        #right()
+        pwm.set_pwm(15, 0, 150)
+        time.sleep(2)
+        pwm.set_pwm(15, 0, 600)
+        time.sleep(2)
+
         print("\n")
     elif value == 'a':
         print("Left")
@@ -146,4 +158,4 @@ while True:
     else:
         print("<<< Invalid Key Entry >>>")
         print("\n")
-        '''
+    '''
