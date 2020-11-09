@@ -1,15 +1,7 @@
-<<<<<<< HEAD
-# sample Simple demo of of the PCA9685 PWM servo/LED controller library.
-=======
-<<<<<<< HEAD
+# Simple demo of of the PCA9685 PWM servo/LED controller library.
 # box Simple demo of of the PCA9685 PWM servo/LED controller library.
->>>>>>> 105be93cc1b646e73bd6ca760ead49014caa221e
-=======
-# test Simple demo of of the PCA9685 PWM servo/LED controller library.
->>>>>>> 711fe21cc1f413c2e35a27246a115547763c6e7f
+# Simple demo of of the PCA9685 PWM servo/LED controller library.
 # This will move channel 0 from min to max position repeatedly.
-# Author: Tony DiCola
-# License: Public Domain
 from __future__ import division
 import time
 
@@ -26,10 +18,9 @@ import Adafruit_PCA9685
 
 # Alternatively specify a different address and/or bus:
 pwm = Adafruit_PCA9685.PCA9685(address=0x40, busnum=0)
-
 # Configure min and max servo pulse lengths
-servo_min = 150  # Min pulse length out of 4096
-servo_max = 600  # Max pulse length out of 4096
+#servo_min = 150  # Min pulse length out of 4096
+#servo_max = 600  # Max pulse length out of 4096
 
 # Helper function to make setting a servo pulse width simpler.
 def set_servo_pulse(channel, pulse):
@@ -56,13 +47,13 @@ while True:
 '''
 def rest():
     #keeps base joint straight forward
-    pwm.set_pwm(0, 0, servo_min)
+    #pwm.set_pwm(0, 0, servo_min)
     #Joint one at resting
-    pwm.set_pwm(1, 0, servo_min)
+    pwm.set_pwm(13, 0, 400)
     #Joint two at resting
-    pwm.set_pwm(2, 0, servo_min)
+    #pwm.set_pwm(2, 0, servo_min)
     #Joint three gripper at resting
-    pwm.set_pwm(3, 0, servo_min)
+    #pwm.set_pwm(3, 0, servo_min)
 
 def extend():
     #pwm.set_pwm(1, 0, servo_min)
@@ -92,7 +83,7 @@ def extend():
 
 def grab():
     #sets servo angle of gripper to squeeze object
-    pwm.set_pwm(3, 0, #)
+    pwm.set_pwm(3, 0, 200)
 
 def retrieve():
     #work backwards from grab positions
@@ -118,4 +109,41 @@ def retrieve():
             time.sleep(.25)
         if i ==0:
             break
+#rest()
+while True:
+    value = input()
+    if value == 'w':
+        print("Forward")
+        #rest()
+        
+        pwm.set_pwm(13, 0, 150)
+        time.sleep(2)
+        #sends servo a low signal so that it relaxes the servo
+        pwm.set_pwm(13, 0, 600)
+        time.sleep(2)
 
+        pwm.set_pwm(13, 4095, 0)
+        print("\n")
+        '''
+    elif value == 's':
+        backward()
+        print("Backward")
+        print("\n")
+    elif value == 'd':
+        print("Right")
+        right()
+        print("\n")
+    elif value == 'a':
+        print("Left")
+        left()
+        print("\n")
+    elif value == 'q':
+        print("Stop")
+        stop()
+        print("\n")
+    elif value == ' ':
+        break
+    else:
+        print("<<< Invalid Key Entry >>>")
+        print("\n")
+        '''
