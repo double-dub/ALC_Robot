@@ -1,4 +1,4 @@
-# Simple demo of of the PCA9685 PWM servo/LED controller library.
+# test Simple demo of of the PCA9685 PWM servo/LED controller library.
 # This will move channel 0 from min to max position repeatedly.
 # Author: Tony DiCola
 # License: Public Domain
