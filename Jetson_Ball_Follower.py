@@ -1,21 +1,49 @@
-import cv2
+from __future__ import division
 import numpy as np
+import RPi.GPIO as gpio
+import Adafruit_PCA9685
+import cv2
 import math
 import time
-import Jetson.GPIO as GPIO
 
 #GPIO setup
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-channels = [33]
-GPIO.setup(channels,GPIO.OUT)
-GPIO.output(channels,GPIO.LOW)
-p = GPIO.PWM(33,50)
+# Initialize PCA9685 Board
+pwm = Adafruit_PCA9685.PCA9685(address=0x40, busnum=0)
+
+#initiate gpio pins & ignore warnings
+gpio.setmode(gpio.BOARD)
+gpio.setwarnings(False)
+
+#Inverse direction pin (low=forward, high=backward)
+inv = 31
+gpio.setup(inv,gpio.OUT)
+
+# RIGHT WHEEL
+#motor A initialize
+#in1 and in2
+m1_in1 = 29
+m1_in2 = 23
+gpio.setup(m1_in1,gpio.OUT)
+gpio.setup(m1_in2,gpio.OUT)
+
+# LEFT WHEEL
+#motor B initialize
+#in1 and in2
+m2_in1 = 19
+m2_in2 = 21
+gpio.setup(m2_in1,gpio.OUT)
+gpio.setup(m2_in2,gpio.OUT)
+
+# PWM pins
+pwm1 = 9
+pwm2 = 8
+pwm.set_pwm(pwm1,0,1000)
+pwm.set_pwm(pwm2,0,1000)
 
 #Values for Object
 Ymin = 0
 Ymax = 100
-Umin = 75
+Umin = 30
 Umax = 140
 Vmin = 0
 Vmax = 100
@@ -44,55 +72,50 @@ end_point = (1280,900)
 font_scale = 1.85
 font_pos = (0,945)
 
-#Move backward function
 def backward():
-    print("backward")
     #motor A
-    #GPIO.output(,GPIO.HIGH)
-    #GPIO.output(,GPIO.LOW)
+    gpio.output(m1_in1,gpio.LOW)
+    gpio.output(m1_in2,gpio.HIGH)
     #motor B
-    #GPIO.output(,GPIO.HIGH)
-    #GPIO.output(,GPIO.LOW)
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.HIGH)
+    gpio.output(inv,gpio.HIGH)
 
-#Move forward function
 def forward():
-    print("forward")
     #motor A
-    #GPIO.output(,GPIO.LOW)
-    #GPIO.output(,GPIO.HIGH)
+    gpio.output(m1_in1,gpio.LOW)
+    gpio.output(m1_in2,gpio.HIGH)
     #motor B
-    #GPIO.output(,GPIO.LOW)
-    #GPIO.output(,GPIO.HIGH)
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.HIGH)
+    gpio.output(inv,gpio.LOW)
 
-#Stop motors function
 def stop():
-    print("stop")
     #motor A
-    #GPIO.output(,GPIO.LOW)
-    #GPIO.output(,GPIO.LOW)
+    gpio.output(m1_in1,gpio.LOW)
+    gpio.output(m1_in2,gpio.LOW)
     #motor B
-    #GPIO.output(,GPIO.LOW)
-    #GPIO.output(,GPIO.LOW)
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.LOW)
 
-#Turn left function
 def left():
-    print("left")
     #motor A
-    #GPIO.output(,GPIO.LOW)
-    #GPIO.output(,GPIO.HIGH)
+    gpio.output(m1_in1,gpio.HIGH)
+    gpio.output(m1_in2,gpio.LOW)
     #motor B
-    #GPIO.output(,GPIO.HIGH)
-    #GPIO.output(,GPIO.LOW)
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.HIGH)
+    gpio.output(inv,gpio.HIGH)
 
-#Turn right function
 def right():
-    print("right")
     #motor A
-    #GPIO.output(,GPIO.HIGH)
-    #GPIO.output(,GPIO.LOW)
+    gpio.output(m1_in1,gpio.HIGH)
+    gpio.output(m1_in2,gpio.LOW)
     #motor B
-    #GPIO.output(,GPIO.LOW)
-    #GPIO.output(,GPIO.HIGH)
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.HIGH)
+    gpio.output(inv,gpio.LOW)
+
 
 #Robot Movement/Camera_Adjustment Function
 def adjustment(x,y,max_x,center_x):
