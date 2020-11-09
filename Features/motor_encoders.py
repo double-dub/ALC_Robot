@@ -34,8 +34,8 @@ gpio.setup(m2_in2,gpio.OUT)
 # PWM pins
 pwm1 = 9
 pwm2 = 8
-pwm.set_pwm(pwm1,0,0)
-pwm.set_pwm(pwm2,0,0)
+pwm.set_pwm(pwm1,0,1000)
+pwm.set_pwm(pwm2,0,1000)
 
 # Arduino Communication
 SERIAL_PORT = '/dev/ttyACM0'
@@ -159,6 +159,8 @@ def encoder_pid():
 
 def encoder_read():
     s = []
+    ser.write("Reset".encode("utf-8"))
+    ser.readline()
     while True:
         data = ser.readline()
         decoded_bytes = int(data[0:len(data)-2].decode("utf-8"))
@@ -169,12 +171,22 @@ def encoder_read():
             enc2 = s[1]
             print(enc1)
             print(enc2)
-            if enc1 > 3592 or enc2 > 3592:
-                stop()
-                print("Stop")
-                break
-        if len(s) == 2:
             print(s)
+            if (enc1 >= 3592) :
+               # stop()
+                ser.write("Reset".encode("utf-8"))
+                time.sleep(.1)
+                print("what?")
+                enc1 = s[0]
+                enc2 = s[1]
+                stop()
+                ser.write("Reset".encode("utf-8"))
+                print(data)
+                break
+                #ser.write("Reset".encode("utf-8"))
+            print(enc1)
+            print(enc2)
+        if len(s) == 2:
             s = []
 
 def backward():
@@ -233,17 +245,18 @@ while True:
         print("Forward")
         forward()
         print("\n")
-        #encoder_read()
-        encoder_pid()
+        encoder_read()
+        #encoder_pid()
     elif value == 's':
         backward()
         print("Backward")
         print("\n")
-        encoder_pid()
+        encoder_read()
     elif value == 'd':
         print("Right")
         right()
         print("\n")
+        encoder_read()
     elif value == 'a':
         print("Left")
         left()
