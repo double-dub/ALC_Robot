@@ -42,11 +42,11 @@ pwm.set_pwm(pwm2,0,1000)
 
 #Values for Object
 Ymin = 0
-Ymax = 100
+Ymax = 179
 Umin = 30
-Umax = 140
+Umax = 255
 Vmin = 0
-Vmax = 100
+Vmax = 122
 
 #YUV Range of Values Matrices
 rangeMin= np.array([Ymin, Umin, Vmin], np.uint8)
@@ -121,27 +121,29 @@ def right():
 def adjustment(x,y,max_x,center_x):
     if (x - center_x) > max_x:
         cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
-        right()
+        #right()
     elif (center_x - x) > max_x:
         cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
-        left()
+        #left()
     else:
         if (area <= 1000):
             cv2.circle(frame,(int(x),int(y)),5,(255,0,0),-1)
-            forward()
+            #forward()
         elif (area >=1500):
             cv2.circle(frame,(int(x),int(y)),5,(0,0,255),-1)
-            backward()
+            #backward()
         else:
-            stop()
+            #stop()
+            print("Stop")
 
-#Video Frame Transforms to Get Binary Video Output Function
 def process(frame):
+    kernel = np.ones((5,5),np.uint8)
     imgMedian = cv2.medianBlur(frame,1)
     imgYUV = cv2.cvtColor(imgMedian,cv2.COLOR_BGR2YUV)
     imgThresh = cv2.inRange(imgYUV, rangeMin, rangeMax)
-    imgErode = cv2.erode(imgThresh, None, iterations = 3)
-    return imgErode
+    imgErode = cv2.erode(imgThresh, None, iterations = 9)
+    imgClose = cv2.morphologyEx(imgErode, cv2.MORPH_CLOSE,kernel)
+    return imgClose
 
 while True:
     #Creates a Camera Output to Add Overlays and Info. Onto
@@ -179,7 +181,7 @@ while True:
         cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
         cv2.putText(frame,"Searching For Object...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
         print("Searching For Object...")
-        left()
+        #left()
         
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
