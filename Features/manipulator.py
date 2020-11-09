@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# box test Simple demo of of the PCA9685 PWM servo/LED controller library.
+# sample Simple demo of of the PCA9685 PWM servo/LED controller library.
 =======
 # test Simple demo of of the PCA9685 PWM servo/LED controller library.
 >>>>>>> 711fe21cc1f413c2e35a27246a115547763c6e7f
