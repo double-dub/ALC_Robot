@@ -49,11 +49,13 @@ def rest():
     #keeps base joint straight forward
     #pwm.set_pwm(0, 0, servo_min)
     #Joint one at resting
-    pwm.set_pwm(13, 0, 200)
+    pwm.set_pwm(11, 0, 200)
     #Joint two at resting
-    pwm.set_pwm(14, 0, 150)
+    pwm.set_pwm(12, 0, 150)
     #Joint three gripper at resting
-    pwm.set_pwm(15, 4095, 0)
+    pwm.set_pwm(14, 0, 400)
+    time.sleep(1)
+    pwm.set_pwm(14, 4095, 0)
 
 def extend():
     #pwm.set_pwm(1, 0, servo_min)
@@ -64,8 +66,8 @@ def extend():
         
   
         if (150<=j<=290):
-            pwm.set_pwm(13, 0, i)
-            pwm.set_pwm(14, 0, j)
+            pwm.set_pwm(11, 0, i)
+            pwm.set_pwm(12, 0, j)
             j+=1
             i+=1
             print("i=:",i)
@@ -73,51 +75,69 @@ def extend():
             time.sleep(.009)
         else:
             #whichever joint is still moving after one of them stops
-            pwm.set_pwm(13, 0, i)
+            pwm.set_pwm(11, 0, i)
             print("i=:",i)
             print("j=:",j)
             i +=1
             time.sleep(.009)
-        if i ==0:
+        if i == 600:
+            print("test")
             break
 
 def grab():
     #sets servo angle of gripper to squeeze object
-    pwm.set_pwm(3, 0, 200)
+    time.sleep(1)
+    pwm.set_pwm(14, 0, 400)
+    time.sleep(1)
+    pwm.set_pwm(14, 0, 500)
+    print("grab")
+    time.sleep(1)
+    pwm.set_pwm(14, 4095, 0)
 
 def retrieve():
     #work backwards from grab positions
-    i = 180
-    j = 180
-    while (10<=i<=180):
+    i = 600
+    j = 290
+    while (150<=i<=600):
         
   
-        if (80<=j<=180):
-            setServoAngle3(pin11, j)
-            setServoAngle2(pin10, i)
+        if (150<=j<=290):           
+            pwm.set_pwm(11, 0, i)
+            pwm.set_pwm(12, 0, j)
             j-=1
             i-=1
             print("i=:",i)
             print("j=:",j)
-            time.sleep(.25)
+            time.sleep(.009)
         else:
             #whichever joint is still moving after one of them stops
-            pwm.set_pwm(2, 0, j)
+            pwm.set_pwm(11, 0, i)
             print("i=:",i)
             print("j=:",j)
             i -=1
-            time.sleep(.25)
-        if i ==0:
+            time.sleep(.009)
+        if i == 150:
+            print("retrieve")
             break
+
+#thewse commands used in order
 rest()
 extend()
+grab()
+retrieve()
 
+'''
 while True:
     value = input()
     if value == 'w':
         print("Forward")
-        '''
-        extend()
+       
+        #extend()
+        
+        pwm.set_pwm(11, 4095, 0)
+        pwm.set_pwm(12, 4095, 0)
+        pwm.set_pwm(14, 4095, 0)
+
         
         #pwm.set_pwm(14, 0, 150)
         time.sleep(2)
