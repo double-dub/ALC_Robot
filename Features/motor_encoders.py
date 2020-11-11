@@ -3,6 +3,9 @@ import Adafruit_PCA9685
 import RPi.GPIO as gpio
 import time
 import serial
+import struct
+import smbus
+import sys
 
 # Initialize PCA9685 Board
 pwm = Adafruit_PCA9685.PCA9685(address=0x40, busnum=0)
@@ -18,31 +21,49 @@ gpio.setup(inv,gpio.OUT)
 # RIGHT WHEEL
 #motor A initialize
 #in1 and in2
-m1_in1 = 29
-m1_in2 = 23
+m1_in1 = 23
+m1_in2 = 29
 gpio.setup(m1_in1,gpio.OUT)
 gpio.setup(m1_in2,gpio.OUT)
 
 # LEFT WHEEL
 #motor B initialize
 #in1 and in2
-m2_in1 = 19
-m2_in2 = 21
+m2_in1 = 21
+m2_in2 = 19
 gpio.setup(m2_in1,gpio.OUT)
 gpio.setup(m2_in2,gpio.OUT)
 
 # PWM pins
-pwm1 = 9
-pwm2 = 8
-pwm.set_pwm(pwm1,0,1000)
-pwm.set_pwm(pwm2,0,1000)
+pwm1 = 8
+pwm2 = 9
+pwm.set_pwm(pwm1,0,2000)
+pwm.set_pwm(pwm2,0,2000)
 
 # Arduino Communication
 SERIAL_PORT = '/dev/ttyACM0'
 BAUD_RATE = 9600
 ser = serial.Serial(SERIAL_PORT,BAUD_RATE)
 
+#i2c bus for the  power shield battery %
+bus = smbus.SMBus(1)
 
+def readVoltage(bus):
+
+     address = 0x36
+     read = bus.read_word_data(address, 2)
+     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+     voltage = swapped * 1.25 /1000/16
+     return voltage
+
+
+def readCapacity(bus):
+
+     address = 0x36
+     read = bus.read_word_data(address, 4)
+     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+     capacity = swapped/256
+     return capacity
 
 
 
@@ -245,22 +266,22 @@ while True:
         print("Forward")
         forward()
         print("\n")
-        encoder_read()
         #encoder_pid()
     elif value == 's':
         backward()
         print("Backward")
         print("\n")
-        encoder_read()
     elif value == 'd':
         print("Right")
         right()
         print("\n")
-        encoder_read()
     elif value == 'a':
         print("Left")
         left()
         print("\n")
+    elif value == 'b':
+        print("Voltage:%5.2fV" % readVoltage(bus))
+        print("Battery:%5i%%" % readCapacity(bus))
     elif value == 'q':
         print("Stop")
         stop()
