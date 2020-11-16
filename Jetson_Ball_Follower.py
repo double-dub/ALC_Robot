@@ -37,14 +37,16 @@ gpio.setup(m2_in2,gpio.OUT)
 # PWM pins
 pwm1 = 9
 pwm2 = 8
-pwm.set_pwm(pwm1,0,1000)
-pwm.set_pwm(pwm2,0,1000)
+speed1 = 1500
+speed2 = 1500
+pwm.set_pwm(pwm1,0,speed1)
+pwm.set_pwm(pwm2,0,speed2)
 
 #Values for Object
 Ymin = 0
-Ymax = 179
+Ymax = 150
 Umin = 30
-Umax = 255
+Umax = 180
 Vmin = 0
 Vmax = 122
 
@@ -73,6 +75,8 @@ font_scale = 1.85
 font_pos = (0,945)
 
 def backward():
+    speed1 = 1000
+    speed2 = 1000
     #motor A
     gpio.output(m1_in1,gpio.LOW)
     gpio.output(m1_in2,gpio.HIGH)
@@ -82,6 +86,8 @@ def backward():
     gpio.output(inv,gpio.HIGH)
 
 def forward():
+    speed1 = 1000
+    speed2 = 1000
     #motor A
     gpio.output(m1_in1,gpio.LOW)
     gpio.output(m1_in2,gpio.HIGH)
@@ -99,6 +105,8 @@ def stop():
     gpio.output(m2_in2,gpio.LOW)
 
 def left():
+    speed1 = 1500
+    speed2 = 1500
     #motor A
     gpio.output(m1_in1,gpio.HIGH)
     gpio.output(m1_in2,gpio.LOW)
@@ -108,6 +116,8 @@ def left():
     gpio.output(inv,gpio.HIGH)
 
 def right():
+    speed1 = 1500
+    speed2 = 1500
     #motor A
     gpio.output(m1_in1,gpio.HIGH)
     gpio.output(m1_in2,gpio.LOW)
@@ -121,19 +131,19 @@ def right():
 def adjustment(x,y,max_x,center_x):
     if (x - center_x) > max_x:
         cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
-        #right()
+        right()
     elif (center_x - x) > max_x:
         cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
-        #left()
+        left()
     else:
         if (area <= 1000):
             cv2.circle(frame,(int(x),int(y)),5,(255,0,0),-1)
-            #forward()
+            forward()
         elif (area >=1500):
             cv2.circle(frame,(int(x),int(y)),5,(0,0,255),-1)
-            #backward()
+            backward()
         else:
-            #stop()
+            stop()
             print("Stop")
 
 def process(frame):
@@ -172,7 +182,7 @@ while True:
         #Text Box W/ Info
         cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
         cv2.putText(frame,"Position: "+str(int(x))+" , "+str(int(y)),font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
-
+        print("Ball Area: "+str(area))
         #Call Robot Movement/Adjustment Function
         adjustment(x,y,max_x,center_x)
 
@@ -181,7 +191,7 @@ while True:
         cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
         cv2.putText(frame,"Searching For Object...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
         print("Searching For Object...")
-        #left()
+        left()
         
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

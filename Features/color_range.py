@@ -34,7 +34,7 @@ while True:
     frame = cv2.flip( frame, 1 ) 
     
     # Convert the BGR image to HSV image.
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2YUV)
     
     # Get the new values of the trackbar in real time as the user changes 
     # them
