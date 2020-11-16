@@ -23,23 +23,3 @@ def readCapacity(bus):
 
 
 bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
-
-'''
-while True:
-
- print("******************")
- print("Voltage:%5.2fV" % readVoltage(bus))
-
- print("Battery:%5i%%" % readCapacity(bus))
-
- if readCapacity(bus) == 100:
-
-         print("Battery FULL")
-
- if readCapacity(bus) < 20:
-
-
-         print("Battery LOW")
- print("******************")
- time.sleep(2)
-'''
