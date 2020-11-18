@@ -63,6 +63,7 @@ def rest():
     #Joint two at resting
     pwm.set_pwm(12, 0, 650)
     #Joint three gripper at resting
+    pwm.set_pwm(13, 0, 375)
     pwm.set_pwm(14, 0, 300)
     time.sleep(.5)
     dig_stop(14)
@@ -70,7 +71,6 @@ def rest():
 
     stop(11)
     stop(12)
-
 def extend_ball():
     #pwm.set_pwm(1, 0, servo_min)
     #pwm.set_pwm(2, 0, servo_min)
@@ -103,10 +103,11 @@ def extend_cup():
     #pwm.set_pwm(2, 0, servo_min)
     i = 650
     j = 650
-    while (150<=i<=650):
+    pwm.set_pwm(13, 0, 650)
+    while (200<=i<=650):
         
   
-        if (425<=j<=650):
+        if (450<=j<=650):
             pwm.set_pwm(11, 0, i)
             pwm.set_pwm(12, 0, j)
             j-=1
@@ -121,9 +122,9 @@ def extend_cup():
             print("j=:",j)
             i -=1
             time.sleep(.002)
-        if i== 150:
-            print("test")
+        if i== 200:
             break
+
 
 
 def grab_ball():
@@ -141,11 +142,10 @@ def grab_cup():
     time.sleep(.5)
     pwm.set_pwm(14, 0, 300)
     time.sleep(.5)
-    pwm.set_pwm(14, 0, 500)
-    time.sleep(.25)
+    pwm.set_pwm(14, 0, 575)
+    time.sleep(1)
     pwm.set_pwm(14, 4095, 0)
     time.sleep(1)
-
 
 def retrieve_ball():
     #work backwards from grab positions
@@ -176,11 +176,12 @@ def retrieve_ball():
 def retrieve_cup():
     #work backwards from grab positions
     i = 150
-    j = 400
+    j = 450
+    pwm.set_pwm(13, 0, 650)
     while (150<=i<=650):
         
   
-        if (400<=j<=650):           
+        if (450<=j<=650):           
             pwm.set_pwm(11, 0, i)
             pwm.set_pwm(12, 0, j)
             j+=1
@@ -253,39 +254,45 @@ def dig_stop(ch):
 #rest()
 
 while True:
+    print("z = rest, x= extend_ball, c = extend_cup, v = grab_ball, b =grab_cup/n") 
+    print("n = retrieve_ball, m = retrieve_cup, , = spindrop")
     value = input()
-    print("z = rest, x= extend, c = grab, v = retrieve, b =spindrop")
     if value == 'z':
         print("rest")
         rest()
         
     elif value == 'x':
-        print("extend")
-        extend()
+        print("extend_ball")
+        extend_ball()
 
     elif value == 'c':
-        print("grab")
-        grab()
-        time.sleep(1)
-        dig_stop(14)
-        #pwm.set_pwm(14, 0, 4096)
-        #time.sleep(1)
-        #stop(14)
+        print("extend_cup")
+        extend_cup()
 
     
     elif value == 'v':
-        print("retrieve")
-        retrieve()
+        print("grab_ball")
+        grab_ball()
         
     elif value == 'b':
-        print("spin and drop")
+        print("grab_cup")
+        grab_cup()
+    elif value == 'n':
+        print("400")
+        pwm.set_pwm(13, 0, 100)
+        time.sleep(1)
+        print("550")
+        pwm.set_pwm(13, 0, 650)
+        time.sleep(.7)
+    elif value == 'm':
+        print("retrieve_cup")
+        retrieve_cup()
+    elif value == ',':
+        print("spindrop")
         spindrop()
     elif value == ' ':
         break
     else:
         print("<<< Invalid Key Entry >>>")
         print("\n")
-      
-
-
-    
+       
