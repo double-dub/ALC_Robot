@@ -1,14 +1,16 @@
+from motors import *
 import cv2
 import numpy as np
+import pretty_errors
 
-cam = cv2.VideoCapture(0)
+#cam = cv2.VideoCapture(0)
 
 Ymin = 0
-Ymax = 100
-Umin = 30
-Umax = 140
-Vmin = 0
-Vmax = 100
+Ymax = 150
+Umin = 0
+Umax = 166
+Vmin = 147
+Vmax = 212
 
 rangeMin= np.array([Ymin, Umin, Vmin], np.uint8)
 rangeMax = np.array([Ymax, Umax, Vmax], np.uint8)
@@ -26,14 +28,15 @@ end_point = (1280,900)
 font_scale = 1.85
 font_pos = (0,945)
 
-def object_detection():
+def cup_finder():
     best_outline=[]
     while True:
         ret, frame = cam.read()
-        imgMedian = cv2.medianBlur(frame,1)
+        imgMedian = cv2.medianBlur(frame,5)
         imgYUV = cv2.cvtColor(imgMedian,cv2.COLOR_BGR2YUV)
         imgThresh = cv2.inRange(imgYUV, rangeMin, rangeMax)
         imgErode = cv2.erode(imgThresh, None, iterations = 3)
+        imgDilate = cv2.dilate(imgErode, None, iterations = 10)
         processed_img = imgErode
         contours,hierarchy = cv2.findContours(processed_img,cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
         major_area = 0
@@ -46,45 +49,55 @@ def object_detection():
         moments = cv2.moments(np.array(best_outline))
 
         area = moments['m00']
-
+        print(area)
         if area >= minArea:
             x = int(moments['m10'] / moments['m00'])
             y = int(moments['m01'] / moments['m00'])
-            cv2.circle(frame,(x,y),5,(0,255,0),-1)
-            cv2.line(frame,(int(x),int(y)),(int(center_x),int(center_y)),(0,255,0),1)
-            cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
-            print("Position: x - "+str(int(x))+" y - "+str(int(y)))
-            cv2.putText(frame,"Position: "+str(int(x))+" , "+str(int(y)),font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
+            #cv2.circle(frame,(x,y),5,(0,255,0),-1)
+            #cv2.line(frame,(int(x),int(y)),(int(center_x),int(center_y)),(0,255,0),1)
+            #cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
+            #print("Position: x - "+str(int(x))+" y - "+str(int(y)))
+            #cv2.putText(frame,"Position: "+str(int(x))+" , "+str(int(y)),font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
             if (x - center_x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
-                print("right")
+                #print("right")
+                setspeed(1100)
+                right()
             elif (center_x - x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
-                print("left")
+                #print("left")
+                setspeed(1100)
+                left()
             else:
-                if (area <= 26000):
+                if (area <= 158400):
                     cv2.circle(frame,(int(x),int(y)),5,(255,0,0),-1)
-                    print("forward")
-                elif (area >= 28000):
+                    #print("forward")
+                    setspeed(850)
+                    forward()
+                elif (area >= 234400):
                     cv2.circle(frame,(int(x),int(y)),5,(0,0,255),-1)
-                    print("backward")
+                    #print("backward")
+                    setspeed(850)
+                    backward()
                 else:
-                    print("stop")
+                    #print("stop")
+                    setspeed(0)
+                    stop()
+                    print("Cup Localized!")
                     break
         else:
-            cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
-            cv2.putText(frame,"Searching For Object...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
-            print("Searching For Object...")
+            #cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
+            #cv2.putText(frame,"Locating Cup...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
+            print("Locating Cup...")
+            setspeed(1000)
+            left()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        cv2.namedWindow("Erode",cv2.WINDOW_NORMAL)
-        cv2.resizeWindow("Erode",800,600)
-        cv2.imshow("Erode",processed_img)
-        cv2.namedWindow("Video Output",cv2.WINDOW_NORMAL)
-        cv2.resizeWindow("Video Output",800,600)
-        cv2.imshow("Video Output",frame)
+        #cv2.namedWindow("Erode",cv2.WINDOW_NORMAL)
+        #cv2.resizeWindow("Erode",800,600)
+        #cv2.imshow("Erode",processed_img)
+        #cv2.namedWindow("Video Output",cv2.WINDOW_NORMAL)
+        #cv2.resizeWindow("Video Output",800,600)
+        #cv2.imshow("Video Output",frame)
     cam.release()
     cv2.destroyAllWindows()
-
-
-object_detection()

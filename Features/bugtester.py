@@ -1,15 +1,24 @@
 from motors import *
 from battery import *
 from encoders import *
-
-print("\n")
-print("Debug Program...Press spacebar to quit\n")
-print("Use the following keys to run a function:\n",end="\nMotor Functions: ")
-print("Forward - w  Backward - s  Right - d  Left - a  Stop - q",end="\nCheck Battery: ")
-print("Battery% - b",end="\nManipulator Functions: ")
-print("Extend - f  Grab - g  Retrieve - r SpinDrop - t ")
+#from color_object import *
+from robot_dock import *
+from imu import *
+from manipulator import *
+import pretty_errors
 
 while True:
+    print("\n")
+    print("Debug Program...Press spacebar to quit\n")
+    print("Use the following keys to run a function:\n")
+    print("Motor Functions: ")
+    print("Forward - w  Backward - s  Right - d  Left - a  Stop - q")
+    print("Check Battery: ")
+    print("Battery% - b Read IMU - l")
+    print("Manipulator Functions: ")
+    print("Extend - f  Grab - g  Retrieve - r SpinDrop - t Rest - y")
+    print("Cup Finder - z Apriltag - x\n")
+
     value = input()
     if value == 'w':
         setspeed(1000)
@@ -39,15 +48,29 @@ while True:
         print("Voltage:%5.2fV" % readVoltage(bus))
         print("Battery:%5i%%" % readCapacity(bus))
     elif value == 'f':
-        print("function")
+        print("Manipulator Extend")
+        extend_cup()
     elif value == 'g':
-        print("function")
+        print("Grab")
+        grab_cup()
     elif value == 'r':
-        print("function")
+        print("Retrieve")
+        retrieve_cup()
     elif value == 't':
-        print("function")
-    
-    
+        print("Spin Drop")
+        spindrop()
+    elif value == 'y':
+        print("Rest")
+        rest()
+    elif value == 'z':
+        print("Give me the cup!")
+        cup_finder()
+    elif value == 'x':
+        print("Apriltag Docking")
+        robodock()
+    elif value == 'l':
+        print("IMU readings: ")
+        imu_read()
     elif value == ' ':
         break
     else:

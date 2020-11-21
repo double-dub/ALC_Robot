@@ -35,12 +35,6 @@ def encoder_read():
         if len(s) == 2:
             s = []
 
-print("\n")
-print("Motor Tester...Press spacebar to quit\n")
-print("Use the following 'wasd' keys to control the robot: \n")
-print("Forward - w  Backward - s  Right - d  Left - a  Stop - q Battery% - b")
-print("\n")
-
 while True:
     value = input()
     if value == 'w':

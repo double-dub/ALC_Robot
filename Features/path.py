@@ -7,7 +7,7 @@ import sys
 import pretty_errors
 
 # Arduino Communication
-SERIAL_PORT = '/dev/ttyACM0'
+SERIAL_PORT = '/dev/ttyACM1'
 BAUD_RATE = 9600
 ser = serial.Serial(SERIAL_PORT,BAUD_RATE,timeout=1)
 
@@ -79,15 +79,15 @@ def encoder_read():
             print(enc)
             if (enc1 >= 3952):
                 stop()
-                s = [[0],[0]]
         if decoded_bytes  == '':
             break
         if len(s) == 2:
             s = []
 
+
 def encf():
-    forward()
     s = []
+    forward()
     while True:
         data = ser.readline()
         decoded_bytes = data[0:len(data)-2].decode("utf-8")
@@ -102,14 +102,17 @@ def encf():
             print(enc)
             if (enc1 >= 3952):
                 stop()
+                encf.e1 = enc1
+                encf.e2 = enc2
                 s = [[0],[0]]
         if decoded_bytes  == '':
             break
         if len(s) == 2:
             s = []
 
-
-
+def last_val():
+    print("last values")
+    print(last_val[0]+' '+last_val[1])
 
 def turn90L():
     s = []
@@ -176,27 +179,45 @@ def enc_res():
     print("Reset")
 
 def rpath():
-    s = []
-    while True:
-        data = ser.readline()
-        ser.flush()
-        decoded_bytes = data[0:len(data)-2].decode("utf-8")
-        if data:
-            s.append(decoded_bytes)
-        if len(s) == 2:
-            enc1 = s[0]
-            enc2 = s[1]
-            print(enc1)
-            print(enc2)
-            if (enc1 >= 3592) or (enc2 >= 3592) :
-                stop()
-                enc1 = s[0]
-                enc2 = s[1]
-                stop()
-                break
-        if len(s) == 2:
-            print(s)
-            s = []
+    #Set Speed
+    setspeed(1300)  
+    #Forward
+    encf()
+    #Reset
+    time.sleep(1)
+    enc_res()
+    time.sleep(1)    
+    #Left Turn
+    turn90L()
+    #Reset
+    time.sleep(1)
+    enc_res()
+    time.sleep(1)
+    #Forward
+    encf()
+    #Reset
+    time.sleep(1)
+    enc_res()
+    time.sleep(1)
+    #Left Turn
+    turn90L()
+    #Reset
+    time.sleep(1)
+    enc_res()
+    time.sleep(1)
+    #Forward
+    encf()
+    #Reset
+    time.sleep(1)
+    enc_res()
+    time.sleep(1)
+    #Left Turn
+    turn90L()
+    #Reset
+    time.sleep(1)
+    enc_res()
+    time.sleep(1)
+
    
 print("\n")
 print("Motor Tester...Press spacebar to quit\n")
@@ -211,6 +232,12 @@ while True:
         print("\n")
         setspeed(1200)
         forward()
+        encoder_read()
+    elif value == 'encf':
+        setspeed(1000)
+        encf()
+        print(encf.e1)
+        print(encf.e2)
     elif value == 'ww':
         print("Forward")
         print("\n")
@@ -250,58 +277,7 @@ while True:
         print("\n")
     elif value == 'path':
         print("Path")
-        
-        #Set Speed
-        setspeed(1300)
-        
-        #Forward
-        encf()
-
-        #Reset
-        time.sleep(1)
-        enc_res()
-        time.sleep(1)
-        
-        #Left Turn
-        turn90L()
-        
-        #Reset
-        time.sleep(1)
-        enc_res()
-        time.sleep(1)
-        
-        #Forward
-        encf()
-        
-        #Reset
-        time.sleep(1)
-        enc_res()
-        time.sleep(1)
-        
-        #Left Turn
-        turn90L()
-        
-        #Reset
-        time.sleep(1)
-        enc_res()
-        time.sleep(1)
-        
-        #Forward
-        encf()
-        
-        #Reset
-        time.sleep(1)
-        enc_res()
-        time.sleep(1)
-
-        #Left Turn
-        turn90L()
-
-        #Reset
-        time.sleep(1)
-        enc_res()
-        time.sleep(1)
-
+        rpath()
     elif value == ' ':
         break
     else:

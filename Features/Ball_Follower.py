@@ -1,90 +1,12 @@
-import RPi.GPIO as gpio
+from motors import *
 import time
 import numpy as np
 import math
 import cv2
+import pretty_errors
 
-#initiate gpio pins & ignore warnings
-gpio.setmode(gpio.BCM)
-gpio.setwarnings(False)
+cap = cv2.VideoCapture(1)
 
-#motor A initialize
-#enable pins
-gpio.setup(2,gpio.OUT)
-gpio.setup(3,gpio.OUT)
-#in1 and in2
-gpio.setup(27,gpio.OUT)
-gpio.setup(22,gpio.OUT)
-
-#motor B initialize
-#enable pins
-gpio.setup(4,gpio.OUT)
-gpio.setup(17,gpio.OUT)
-#in1 and in2
-gpio.setup(10,gpio.OUT)
-gpio.setup(9,gpio.OUT)
-
-#activate motor A
-gpio.output(2,True)
-gpio.output(3,True)
-
-#activate motor B
-gpio.output(4,True)
-gpio.output(17,True)
-
-#custom motor speeds using PWM duty cycles
-p1 = gpio.PWM(2,1000)
-p2 = gpio.PWM(17,1000)
-p1.start(40)
-p2.start(40)
-temp1 = 1
-
-def backward():
-    #motor A
-    gpio.output(27,gpio.HIGH)
-    gpio.output(22,gpio.LOW)
-    #motor B
-    gpio.output(10,gpio.HIGH)
-    gpio.output(9,gpio.LOW)
-    temp1=1
-    
-def forward():
-    #motor A
-    gpio.output(27,gpio.LOW)
-    gpio.output(22,gpio.HIGH)
-    #motor B
-    gpio.output(10,gpio.LOW)
-    gpio.output(9,gpio.HIGH)
-    temp1=0
-    
-def stop():
-    #motor A
-    gpio.output(27,gpio.LOW)
-    gpio.output(22,gpio.LOW)
-    #motor B
-    gpio.output(10,gpio.LOW)
-    gpio.output(9,gpio.LOW)
-
-def left():
-    p1.ChangeDutyCycle(100)
-    p2.ChangeDutyCycle(100)
-    #motor A
-    gpio.output(27,gpio.LOW)
-    gpio.output(22,gpio.HIGH)
-    #motor B
-    gpio.output(10,gpio.HIGH)
-    gpio.output(9,gpio.LOW)
-
-def right():
-    p1.ChangeDutyCycle(100)
-    p2.ChangeDutyCycle(100)
-    #motor A
-    gpio.output(27,gpio.HIGH)
-    gpio.output(22,gpio.LOW)
-    #motor B
-    gpio.output(10,gpio.LOW)
-    gpio.output(9,gpio.HIGH)
-    
 #Horizontal adjustments to center object    
 def adjustment(x,y,max_x,center_x):
     #If distance on right-side is > limit, adjust
@@ -124,9 +46,7 @@ def process(c_input):
     imgErode = cv2.erode(imgThresh, None, iterations = 3)
     return imgErode
 
-#Display "Eroded" window (black background with white object)
 cv2.namedWindow("Erode")
-cap = cv2.VideoCapture(0)
 
 #Object Parameters
 minArea = 50

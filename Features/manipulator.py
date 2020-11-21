@@ -67,10 +67,10 @@ def rest():
     pwm.set_pwm(14, 0, 300)
     time.sleep(.5)
     dig_stop(14)
-    stop(10)
+    stop_servo(10)
 
-    stop(11)
-    stop(12)
+    stop_servo(11)
+    stop_servo(12)
 def extend_ball():
     #pwm.set_pwm(1, 0, servo_min)
     #pwm.set_pwm(2, 0, servo_min)
@@ -106,7 +106,7 @@ def extend_cup():
     pwm.set_pwm(13, 0, 650)
     while (200<=i<=650):
         
-  
+    
         if (450<=j<=650):
             pwm.set_pwm(11, 0, i)
             pwm.set_pwm(12, 0, j)
@@ -114,14 +114,14 @@ def extend_cup():
             i-=1
             print("i=:",i)
             print("j=:",j)
-            time.sleep(.002)
+            time.sleep(.004)
         else:
             #whichever joint is still moving after one of them stops
             pwm.set_pwm(11, 0, i)
             print("i=:",i)
             print("j=:",j)
             i -=1
-            time.sleep(.002)
+            time.sleep(.004)
         if i== 200:
             break
 
@@ -150,34 +150,7 @@ def grab_cup():
 def retrieve_ball():
     #work backwards from grab positions
     i = 150
-    j = 400
-    while (150<=i<=650):
-        
-  
-        if (400<=j<=650):           
-            pwm.set_pwm(11, 0, i)
-            pwm.set_pwm(12, 0, j)
-            j+=1
-            i+=1
-            print("i=:",i)
-            print("j=:",j)
-            time.sleep(.002)
-        else:
-            #whichever joint is still moving after one of them stops
-            pwm.set_pwm(11, 0, i)
-            print("i=:",i)
-            print("j=:",j)
-            i +=1
-            time.sleep(.002)
-        if i == 650:
-            print("retrieve")
-            break
-
-def retrieve_cup():
-    #work backwards from grab positions
-    i = 150
     j = 450
-    pwm.set_pwm(13, 0, 650)
     while (150<=i<=650):
         
   
@@ -188,14 +161,41 @@ def retrieve_cup():
             i+=1
             print("i=:",i)
             print("j=:",j)
-            time.sleep(.002)
+            time.sleep(.006)
         else:
             #whichever joint is still moving after one of them stops
             pwm.set_pwm(11, 0, i)
             print("i=:",i)
             print("j=:",j)
             i +=1
-            time.sleep(.002)
+            time.sleep(.006)
+        if i == 650:
+            print("retrieve")
+            break
+
+def retrieve_cup():
+    #work backwards from grab positions
+    i = 150
+    j = 350
+    pwm.set_pwm(13, 0, 650)
+    while (150<=i<=650):
+        
+  
+        if (350<=j<=650):           
+            pwm.set_pwm(11, 0, i)
+            pwm.set_pwm(12, 0, j)
+            j+=1
+            i+=1
+            print("i=:",i)
+            print("j=:",j)
+            time.sleep(.004)
+        else:
+            #whichever joint is still moving after one of them stops
+            pwm.set_pwm(11, 0, i)
+            print("i=:",i)
+            print("j=:",j)
+            i +=1
+            time.sleep(.004)
         if i == 650:
             print("retrieve")
             break
@@ -234,65 +234,12 @@ def spindrop():
     pwm.set_pwm(14, 0, 250)
     time.sleep(1)
     #pwm.set_pwm(10, 4096, 0)
-    stop(10)
-    stop(14)
+    stop_servo(10)
+    stop_servo(14)
 
-def stop(ch):
+def stop_servo(ch):
     pwm.set_pwm(ch, 4096, 0)
     #time.sleep(.25)
 def dig_stop(ch):
     pwm.set_pwm(ch, 4095, 0)
     time.sleep(.5)
-
-#thewse commands used in order
-
-#rest()
-#extend()
-#grab()
-#retrieve()
-#spindrop()
-#rest()
-
-while True:
-    print("z = rest, x= extend_ball, c = extend_cup, v = grab_ball, b =grab_cup/n") 
-    print("n = retrieve_ball, m = retrieve_cup, , = spindrop")
-    value = input()
-    if value == 'z':
-        print("rest")
-        rest()
-        
-    elif value == 'x':
-        print("extend_ball")
-        extend_ball()
-
-    elif value == 'c':
-        print("extend_cup")
-        extend_cup()
-
-    
-    elif value == 'v':
-        print("grab_ball")
-        grab_ball()
-        
-    elif value == 'b':
-        print("grab_cup")
-        grab_cup()
-    elif value == 'n':
-        print("400")
-        pwm.set_pwm(13, 0, 100)
-        time.sleep(1)
-        print("550")
-        pwm.set_pwm(13, 0, 650)
-        time.sleep(.7)
-    elif value == 'm':
-        print("retrieve_cup")
-        retrieve_cup()
-    elif value == ',':
-        print("spindrop")
-        spindrop()
-    elif value == ' ':
-        break
-    else:
-        print("<<< Invalid Key Entry >>>")
-        print("\n")
-       
