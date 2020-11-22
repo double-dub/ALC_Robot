@@ -68,9 +68,16 @@ while True:
     elif value == 'x':
         print("Apriltag Docking")
         robodock()
+    elif value == 'k':
+        start_imu()
     elif value == 'l':
         print("IMU readings: ")
+        start_imu()
+        time.sleep(.01)
+        halt_imu()
         imu_read()
+    elif value == 'j':
+        halt_imu()
     elif value == ' ':
         break
     else:

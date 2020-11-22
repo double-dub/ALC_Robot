@@ -1,4 +1,5 @@
 from motors import *
+from imu import *
 import time
 import serial
 import struct
@@ -63,7 +64,7 @@ def encoder_pid(distance):
         p = []
 
 
-def encoder_read():
+def encoder_reads():
     s = []
     while True:
         data = ser.readline()
@@ -77,10 +78,6 @@ def encoder_read():
             enc[0].append(enc1)
             enc[1].append(enc2)
             print(enc)
-            if (enc1 >= 3952):
-                stop()
-        if decoded_bytes  == '':
-            break
         if len(s) == 2:
             s = []
 
@@ -184,41 +181,33 @@ def rpath():
     #Forward
     encf()
     #Reset
-    time.sleep(1)
     enc_res()
     time.sleep(1)    
     #Left Turn
     turn90L()
     #Reset
-    time.sleep(1)
     enc_res()
     time.sleep(1)
     #Forward
     encf()
     #Reset
-    time.sleep(1)
     enc_res()
     time.sleep(1)
     #Left Turn
     turn90L()
     #Reset
-    time.sleep(1)
     enc_res()
     time.sleep(1)
     #Forward
     encf()
     #Reset
-    time.sleep(1)
     enc_res()
     time.sleep(1)
     #Left Turn
     turn90L()
     #Reset
-    time.sleep(1)
     enc_res()
     time.sleep(1)
-
-   
 print("\n")
 print("Motor Tester...Press spacebar to quit\n")
 print("Use the following 'wasd' keys to control the robot: \n")
@@ -239,10 +228,7 @@ while True:
         print(encf.e1)
         print(encf.e2)
     elif value == 'ww':
-        print("Forward")
         print("\n")
-        setspeed(1200)
-        forward()
         encoder_reads()
     elif value == 's':
         backward()
@@ -278,6 +264,8 @@ while True:
     elif value == 'path':
         print("Path")
         rpath()
+    elif value == 'shit':
+        turns()
     elif value == ' ':
         break
     else:

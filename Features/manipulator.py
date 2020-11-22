@@ -56,7 +56,6 @@ while True:
 '''
 def rest():
     #keeps base joint straight forward
-    #pwm.set_pwm(0, 0, servo_min)
     #Joint one at resting
     pwm.set_pwm(10, 0, 650)
     pwm.set_pwm(11, 0, 650)
@@ -123,6 +122,8 @@ def extend_cup():
             i -=1
             time.sleep(.004)
         if i== 200:
+            stop_servo(11)
+            stop_servo(12)
             break
 
 
@@ -198,11 +199,15 @@ def retrieve_cup():
             time.sleep(.004)
         if i == 650:
             print("retrieve")
+            stop_servo(11)
+            stop_servo(12)
             break
 
 
 
 def spindrop():
+    pwm.set_pwm(11, 0, 650)
+    pwm.set_pwm(12, 0, 650)
     pwm.set_pwm(10, 0, 650)
     pwm.set_pwm(10, 0, 125)
     time.sleep(1)
@@ -243,3 +248,5 @@ def stop_servo(ch):
 def dig_stop(ch):
     pwm.set_pwm(ch, 4095, 0)
     time.sleep(.5)
+
+    
