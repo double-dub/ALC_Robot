@@ -36,4 +36,5 @@ def imu_halt():
 
 imu_start()
 time.sleep(0.01)
-imu_read()
+angle = imu_read()
+print(angle)
