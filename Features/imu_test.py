@@ -6,6 +6,8 @@ SERIAL_PORT = '/dev/ttyACM0'
 BAUD_RATE = 9600
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=None)
 
+angle = 0.0
+
 
 def imu_read():
     s = []
@@ -21,9 +23,10 @@ def imu_read():
     imu_start()
 
     try:
-        return s[-1]
-    except Exception:
-        pass
+        angle = s[-1]
+        return angle
+    except ValueError:
+        angle = angle
 
 
 def imu_start():
@@ -35,6 +38,6 @@ def imu_halt():
 
 
 imu_start()
-time.sleep(0.01)
+time.sleep(0.1)
 angle = imu_read()
 print(angle)
