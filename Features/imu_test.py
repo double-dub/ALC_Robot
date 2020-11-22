@@ -20,10 +20,10 @@ def imu_read():
 
     imu_start()
 
-    if len(s) == 0:
-        return "IMU List is empty"
-
-    return s[-1]
+    try:
+        return s[-1]
+    except:
+        # Do nothing
 
 
 def imu_start():
