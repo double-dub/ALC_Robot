@@ -22,8 +22,8 @@ def imu_read():
 
     try:
         return s[-1]
-    except:
-        # Do nothing
+    except Exception:
+        pass
 
 
 def imu_start():
