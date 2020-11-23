@@ -1,6 +1,8 @@
+from threading import Thread
 import serial
 import time
 import pretty_errors
+
 
 # Arduino Communication IMU
 SERIAL_PORT = '/dev/ttyACM0'
@@ -41,6 +43,6 @@ def imu_halt():
 imu_start()
 
 for x in range(10):
-    time.sleep(1)
+    time.sleep(0.01)
     angle = imu_read()
     print(angle)
