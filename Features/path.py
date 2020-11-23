@@ -227,6 +227,8 @@ def imu_turn90():
         print(cur_angle)
     print("Exited loop\n")
 
+imu_turn90()
+
 print("\n")
 print("Motor Tester...Press spacebar to quit\n")
 print("Use the following 'wasd' keys to control the robot: \n")
