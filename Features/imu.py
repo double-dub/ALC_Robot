@@ -9,7 +9,7 @@ ser = serial.Serial(SERIAL_PORT, BAUD_RATE,timeout = None)
 angle = 0.0
 
 
-def imu_read():
+def imu_read_test():
     ser.write(b'g')
     time.sleep(.01)
     data = ser.readline()
@@ -62,11 +62,12 @@ def imu_read():
             if data:
                s.append(float(decoded_bytes))
 
-        imu_start()
         angle = s[-1]
 
     except Exception:
         angle = angle
+
+    imu_start()
 
     return angle
 

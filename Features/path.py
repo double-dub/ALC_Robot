@@ -208,6 +208,13 @@ def rpath():
     #Reset
     enc_res()
     time.sleep(1)
+
+
+def imu_turn90():
+    cur_angle = imu_read()
+
+
+
 print("\n")
 print("Motor Tester...Press spacebar to quit\n")
 print("Use the following 'wasd' keys to control the robot: \n")
