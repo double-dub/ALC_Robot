@@ -38,6 +38,8 @@ def imu_halt():
 
 
 imu_start()
-time.sleep(0.01)
-angle = imu_read()
-print(angle)
+
+for x in range(10):
+    time.sleep(0.01)
+    angle = imu_read()
+    print(angle)
