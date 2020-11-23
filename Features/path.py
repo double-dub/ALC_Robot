@@ -216,6 +216,8 @@ def imu_turn90():
         cur_angle = imu_read()
 
     goal_angle = cur_angle + 90
+    print("Start angle: " + cur_angle + "\n")
+    print("Goal angle: " + goal_angle + "\n")
     while cur_angle < goal_angle:
         # turn-right
         cur_angle = imu_read()
@@ -223,7 +225,9 @@ def imu_turn90():
             cur_angle = imu_read()
         setspeed(1250)
         right()
+        print("Current angle: " + cur_angle + "\n")
     stop()
+    print("Final angle : " + cur_angle + "\n")
     print("Exited loop\n")
 
 
