@@ -224,7 +224,7 @@ def imu_turn90():
         setspeed(950)
         right()
     stop()
-        print(cur_angle)
+    print(cur_angle)
     print("Exited loop\n")
 
 
