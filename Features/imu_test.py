@@ -41,6 +41,6 @@ def imu_halt():
 imu_start()
 
 for x in range(10):
-    time.sleep()
+    time.sleep(1)
     angle = imu_read()
     print(angle)
