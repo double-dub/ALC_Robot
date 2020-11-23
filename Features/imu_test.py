@@ -27,7 +27,7 @@ def imu_read():
         imu_start()
         angle = s[-1]
 
-    except ValueError:
+    except Exception:
         angle = angle
 
     return angle
