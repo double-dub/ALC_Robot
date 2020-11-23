@@ -221,13 +221,12 @@ def imu_turn90():
         cur_angle = imu_read()
         while cur_angle == "failed":
             cur_angle = imu_read()
-        # setspeed(950)
-        # right()
-    # stop()
+        setspeed(950)
+        right()
+    stop()
         print(cur_angle)
     print("Exited loop\n")
 
-imu_turn90()
 
 print("\n")
 print("Motor Tester...Press spacebar to quit\n")
@@ -286,7 +285,7 @@ while True:
         print("Path")
         rpath()
     elif value == 'shit':
-        turns()
+        imu_turn90()
     elif value == ' ':
         break
     else:
