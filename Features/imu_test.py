@@ -42,9 +42,11 @@ def imu_halt():
     ser.write(b'h')
 
 
-imu_start()
+def readings():
+    global angle
+    imu_start()
 
-for x in range(10):
-    time.sleep(0.01)
-    angle = imu_read()
-    print(angle)
+    for x in range(10):
+        time.sleep(0.01)
+        angle = imu_read()
+        print(angle)
