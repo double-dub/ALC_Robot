@@ -1,5 +1,6 @@
 import serial
 import time
+import pretty_errors
 
 # Arduino Communication IMU
 SERIAL_PORT = '/dev/ttyACM0'
@@ -14,20 +15,20 @@ def imu_read():
 
     imu_halt()
 
-    while ser.in_waiting != 0:
-        data = ser.readline()
-        decoded_bytes = data.decode("utf-8")
-        if data:
-            s.append(float(decoded_bytes))
-
-    imu_start()
-
     try:
+        while ser.in_waiting != 0:
+            data = ser.readline()
+            decoded_bytes = data.decode("utf-8")
+            if data:
+               s.append(float(decoded_bytes))
+
+        imu_start()
         angle = s[-1]
-        return angle
+
     except ValueError:
         angle = angle
 
+    return angle
 
 def imu_start():
     ser.write(b'g')
@@ -40,6 +41,6 @@ def imu_halt():
 imu_start()
 
 for x in range(10):
-    time.sleep(0.01)
+    time.sleep()
     angle = imu_read()
     print(angle)
