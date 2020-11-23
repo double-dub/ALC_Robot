@@ -212,8 +212,20 @@ def rpath():
 
 def imu_turn90():
     cur_angle = imu_read()
+    while cur_angle == "failed":
+        cur_angle = imu_read()
 
-
+    goal_angle = cur_angle + 90
+    while cur_angle < goal_angle:
+        # turn-right
+        cur_angle = imu_read()
+        while cur_angle == "failed":
+            cur_angle = imu_read()
+        # setspeed(950)
+        # right()
+    # stop()
+        print(cur_angle)
+    print("Exited loop\n")
 
 print("\n")
 print("Motor Tester...Press spacebar to quit\n")
