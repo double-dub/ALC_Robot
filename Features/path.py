@@ -221,10 +221,9 @@ def imu_turn90():
         cur_angle = imu_read()
         while cur_angle == "failed":
             cur_angle = imu_read()
-        setspeed(950)
+        setspeed(1250)
         right()
     stop()
-    print(cur_angle)
     print("Exited loop\n")
 
 
