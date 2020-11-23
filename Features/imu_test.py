@@ -13,6 +13,7 @@ angle = 0.0
 
 
 def imu_read():
+    global angle
     s = []
 
     imu_halt()
@@ -31,6 +32,7 @@ def imu_read():
         angle = angle
 
     return angle
+
 
 def imu_start():
     ser.write(b'g')
