@@ -33,8 +33,6 @@ gpio.setup(m2_in2,gpio.OUT)
 # PWM pins
 pwm1 = 8
 pwm2 = 9
-pwm.set_pwm(pwm1,0,600)
-pwm.set_pwm(pwm2,0,600)
 
 def backward():
     #motor A
@@ -98,8 +96,8 @@ def right():
     gpio.output(m2_in2,gpio.HIGH)
     gpio.output(inv,gpio.LOW)
 
-def setspeed(speed):
-    pwm.set_pwm(pwm1,0,speed)
+def setspeedm1(speed):
     pwm.set_pwm(pwm2,0,speed)
 
-
+def setspeedm2(speed):
+    pwm.set_pwm(pwm1,0,speed)

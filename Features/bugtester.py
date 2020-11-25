@@ -76,6 +76,8 @@ while True:
         time.sleep(.01)
         halt_imu()
         imu_read()
+    elif value =='n':
+        get_angle()
     elif value == 'j':
         halt_imu()
     elif value == ' ':

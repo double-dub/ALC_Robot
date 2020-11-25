@@ -7,62 +7,46 @@ import smbus
 import sys
 import pretty_errors
 
+
 # Arduino Communication
 SERIAL_PORT = '/dev/ttyACM1'
 BAUD_RATE = 9600
 ser = serial.Serial(SERIAL_PORT,BAUD_RATE,timeout=1)
 
-#i2c bus for the  power shield battery %
-bus = smbus.SMBus(1)
 
-def readVoltage(bus):
-
-     address = 0x36
-     read = bus.read_word_data(address, 2)
-     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-     voltage = swapped * 1.25 /1000/16
-     return voltage
-
-
-def readCapacity(bus):
-
-     address = 0x36
-     read = bus.read_word_data(address, 4)
-     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-     capacity = swapped/256
-     return capacity
-
-def encoder_pid(distance):
+def pid():
     p = []
-    kp = .4
+    kp = .5
     time.sleep(1)
-    data = ser.readline()
-    decoded_bytes = int(data[0:len(data)-2].decode("utf-8"))
-    
-    while (p[0]<distance):
-        forward()
+    setspeedm1(1000)
+    setspeedm2(1000)
+    forward()
+    while True:
         data = ser.readline()
-        decoded_bytes = int(data[0:len(data)-2].decode("utf-8"))
+        decoded_bytes = data[0:len(data)-2].decode("utf-8")
         if data:
-            p.append(decoded_bytes)
-        
-        if (p[0] > 3952):
-            #ser.write(b"hi fren")
-            stop()
-            #enc_res()
+            p.append(int(decoded_bytes))
         if len(p) == 2:
             speed = 1000
             slave_pwm = speed
-            pwm.set_pwm(pwm1,0,1000)
+            setspeedm1(1000)
             enc = [[],[]]
             enc[0].append(p[0])
             enc[1].append(p[1])
             print(enc)
             error = p[0] - p[1]
-            slave_pwm += round(error / kp)
-            pwm.set_pwm(pwm2,0,slave_pwm)
-        p = []
-
+            print("Error: "+str(error))
+            slave_pwm += round(error /  kp)%100
+            setspeedm2(slave_pwm) 
+            if (enc[0][0] >= 10000):
+                stop()
+                encf.e1 = enc[0][0]
+                encf.e2 = enc[1][0]
+                p = [[0],[0]]
+        if decoded_bytes  == '':
+            break
+        if len(p) == 2:
+            p = []
 
 def encoder_reads():
     s = []
@@ -81,13 +65,16 @@ def encoder_reads():
         if len(s) == 2:
             s = []
 
-
 def encf():
     s = []
+    speed = 3000
+    setspeedm1(speed)
+    setspeedm2(speed)
     forward()
-    setspeedm2(0)
-    setspeedm1(1000)
     while True:
+        speed -= 2
+        setspeedm1(speed)
+        setspeedm2(speed)
         data = ser.readline()
         decoded_bytes = data[0:len(data)-2].decode("utf-8")
         if data:
@@ -99,7 +86,7 @@ def encf():
             enc[0].append(enc1)
             enc[1].append(enc2)
             print(enc)
-            if (enc1 >= 3952):
+            if (enc1 >= 10000):
                 stop()
                 encf.e1 = enc1
                 encf.e2 = enc2
@@ -112,54 +99,6 @@ def encf():
 def last_val():
     print("last values")
     print(last_val[0]+' '+last_val[1])
-
-def turn90L():
-    s = []
-    left()
-    while True:
-        data = ser.readline()
-        ser.flush()
-        decoded_bytes = data[0:len(data)-2].decode("utf-8")
-        if data:
-            s.append(int(decoded_bytes))
-        if len(s) == 2:
-            enc1 = s[0]
-            enc2 = s[1]
-            enc = [[],[]]
-            enc[0].append(enc1)
-            enc[1].append(enc2)
-            print(enc)
-            if (enc1 <= -1796) or (enc2 >= 1796) :
-                stop()
-        if decoded_bytes == '':
-            break
-        if len(s) == 2:
-            #print(s)
-            s = []
- 
-def turn90R():
-    s = []
-    while True:
-        data = ser.readline()
-        ser.flush()
-        decoded_bytes = int(data[0:len(data)-2].decode("utf-8"))
-        if data:
-            s.append(decoded_bytes)
-        if len(s) == 2:
-            enc1 = s[0]
-            enc2 = s[1]
-            print(enc1)
-            print(enc2)
-            if (enc1 >= 1796) or (enc2 <= -1796) :
-                stop()
-                enc1 = s[0]
-                enc2 = s[1]
-                stop()
-                break
-        if len(s) == 2:
-            print(s)
-            s = []
- 
 def readenc():
     #ser.write("b'0\r\n'")
     #ser.write(b" ")
@@ -175,41 +114,16 @@ def readenc():
 
 def enc_res():
     ser.write(b"0")
-    print("Reset")
 
-def rpath():
-    #Set Speed
-    setspeed(1300)  
-    #Forward
-    encf()
-    #Reset
-    enc_res()
-    time.sleep(1)    
-    #Left Turn
-    turn90L()
-    #Reset
-    enc_res()
-    time.sleep(1)
-    #Forward
-    encf()
-    #Reset
-    enc_res()
-    time.sleep(1)
-    #Left Turn
-    turn90L()
-    #Reset
-    enc_res()
-    time.sleep(1)
-    #Forward
-    encf()
-    #Reset
-    enc_res()
-    time.sleep(1)
-    #Left Turn
-    turn90L()
-    #Reset
-    enc_res()
-    time.sleep(1)
+
+
+
+
+
+
+
+
+# Start of IMU Stuff
 
 vector_counter = 0 
 the_2dlist = []
@@ -276,20 +190,31 @@ def calc_resultant(array2d):
 #res_vector = calc_resultant(vector_list)
 #print(res_vector)
 
-print("\n")
-print("Motor Tester...Press spacebar to quit\n")
-print("Use the following 'wasd' keys to control the robot: \n")
-print("Forward - w  Backward - s  Right - d  Left - a  Stop - q Battery% - b")
-print("\n")
 
+def snakepath():
+    encf()
+    turn90L()
+    encf2()
+    turn90L()
+    encf()
+    turn90R()
+    encf2()
+    turn90R()
+    encf()
+
+
+enc_res()
 while True:
     value = input()
     if value == 'w':
         print("Forward")
         print("\n")
-        setspeed(1200)
+        setspeedm1(1200)
+        setspeedm2(1200)
         forward()
-        encoder_read()
+    if value == 'pid':
+        print("PID program \n")
+        pid()
     elif value == 'encf':
         encf()
         print(encf.e1)
@@ -303,13 +228,14 @@ while True:
         print("\n")
     elif value == 'd':
         print("Right")
-        setspeed = 1300
+        setspeedm1(1300)
+        setspeedm2(1300)
         right()
-        # turn90R()
         print("\n")
     elif value == 'a':
         print("Left")
-        setspeed = 1300
+        setspeedm1(1300)
+        setspeedm2(1300) 
         left()
         # turn90L()
         print("\n")
@@ -323,16 +249,10 @@ while True:
         encoder_pid()
     elif value == '1':
         encoder_read()
-    elif value == 'b':
-        print("Voltage:%5.2fV" % readVoltage(bus))
-        print("Battery:%5i%%" % readCapacity(bus))
     elif value == 'q':
         print("Stop")
         stop()
         print("\n")
-    elif value == 'path':
-        print("Path")
-        rpath()
     elif value == 'shit':
         imu_turn90()
     elif value == 'read':

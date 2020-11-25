@@ -65,7 +65,7 @@ def imu_read():
         angle = s[-1]
 
     except Exception:
-        angle = angle
+        angle = "failed"
 
     imu_start()
 
@@ -95,3 +95,27 @@ def get_angle():
     time.sleep(.01)
     halt_imu()
     return imu_read()
+
+def reading():
+    global angle
+    s = []
+
+    imu_halt()
+
+    try:
+        while ser.in_waiting != 0:
+            data = ser.readline()
+            decoded_bytes = data.decode("utf-8")
+            if data:
+               s.append(float(decoded_bytes))
+
+        angle = s[-1]
+
+    except Exception:
+        angle = angle
+
+    imu_start()
+
+    print(angle)
+
+
