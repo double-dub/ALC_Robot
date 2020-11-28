@@ -2,7 +2,7 @@ from motors import *
 from battery import *
 from encoders import *
 #from color_object import *
-from robot_dock import *
+#from robot_dock import *
 from imu import *
 from manipulator import *
 import pretty_errors

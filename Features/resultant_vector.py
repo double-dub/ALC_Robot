@@ -1,12 +1,4 @@
-
 import math
-
-vector_list = [
-    [1.0, 0.0],
-    [1.2, 45.0],
-    [1.5, 135]
-]
-
 
 def calc_resultant(array2d):
     x_component = 0.0
@@ -24,6 +16,3 @@ def calc_resultant(array2d):
 
     return [round(resultant_mag, 3), round(math.degrees(resultant_deg), 3)]
 
-
-res_vector = calc_resultant(vector_list)
-print(res_vector)

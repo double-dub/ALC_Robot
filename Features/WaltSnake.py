@@ -2,6 +2,7 @@ from motors import *
 from path import enc_res
 from imu import *
 from encoders import *
+from encoderthread import *
 import time
 import serial
 import struct
@@ -10,11 +11,45 @@ import sys
 import pretty_errors
 
 
-
 def one_Lap():
     enc_res()
-            
+    forward()
+           
 
+def spincw_180():
+    #spin clockwise 180 degrees from charging dock 
+
+#long straight aways
+ref_angle = 0
+def ref_angle():
+    global angle
+    ref_angle = angle
+    global ref_angle
+
+def fwrd_180():
+    global encoder1
+    global ref_angle
+    global angle
+    #angle180 = ref_angle + 180
+    #10186 ticks = 5ft with 2.47in radius
+    while (encoder1<13887):
+        forward()
+        if ((angle180+.5) < angle):
+            slight_right()
+        elif ((angle180+.5) > angle):
+            slight_left()
+        elif ((angle180+.5) <= angle <=(angle180+ .5)):
+            forward()
+    stop()
+    print(encoder1)
+
+def fwrd_short():
+    global encoder1
+    #10186 ticks = 5ft with 2.47in radius
+    while (encoder1<6943):
+        forward()
+    stop()
+    print(encoder1)
 
 
 
@@ -216,9 +251,11 @@ while True:
         setspeedm1(1200)
         setspeedm2(1200)
         forward()
-    if value == 'pid':
+    elif value == 'pid':
         print("PID program \n")
         pid()
+    elif value == 'fwrd':
+        fwrd()
     elif value == 'encf':
         encf()
         print(encf.e1)

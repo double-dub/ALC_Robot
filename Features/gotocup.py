@@ -1,22 +1,9 @@
-#!/usr/bin/env python
-
-'''Demonstrate Python wrapper of C apriltag library by running on camera frames.'''
-from __future__ import division
-from __future__ import print_function
 from motors import *
-from color_object import *
-from argparse import ArgumentParser
-import apriltag
-import tagUtils as tud
-import math
 import cv2
+import numpy as np
+import pretty_errors
 
 cam = cv2.VideoCapture(0)
-detector = apriltag.Detector()
-window = 'Camera'
-fx ,fy ,cx, cy = (1390.3977534277124, 1409.7720276829375, 639.50000001162925, 479.49999999786633)
-camera_params = fx, fy, cx, cy
-tag_size = 1
 
 Ymin = 0
 Ymax = 150
@@ -33,63 +20,18 @@ width = 1280
 height = 880
 center_y = int(height/2)
 center_x = int(width/2)
-max_y = height/5
-max_x = width/4
+max_y = height/6
+max_x = width/5
 
 start_point = (0,1000)
 end_point = (1280,900)
 font_scale = 1.85
 font_pos = (0,945)
 
-def robodock():
-   while True:
-       robodock.k = 0
-       ret, frame = cam.read()
-       gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-       detections, dimg = detector.detect(gray, return_image=True)
-
-       num_detections = len(detections)
-       print('Detected {} tags.\n'.format(num_detections))
-       setspeed(0)
-       for i, detection in enumerate(detections):
-           #print('Detection {} of {}:'.format(i+1, num_detections))
-           #print()
-           #print(detection.tostring(indent=2))
-           #print()
-
-           dis = tud.get_distance(detection.homography,10000)
-           print('Distance',dis)
-        
-           detector.detection_pose(detection,camera_params,tag_size=1,z_sign=1)
-        
-           pose, e0, e1 = detector.detection_pose(detection,camera_params,tag_size)
-           print(pose[2][0])
-           if pose[2][0] < -0.1:
-               left()
-           elif pose[2][0] > 0.1:
-               right()    
-               if (dis >= 20):
-                   setspeed(850)
-                   forward()
-               elif (dis < 20):
-                   stop()
-                   print("stop")
-                   k = k + 1
-                   time.sleep(2)
-                   break
-       print(robodock.k)
-       #if k > 0:
-       #    break
-       #overlay = frame // 2 + dimg[:, :, None] // 2
-       #cv2.namedWindow(window,cv2.WINDOW_NORMAL)
-       #cv2.resizeWindow(window,800,600)
-       #cv2.imshow(window, overlay)
-       #k = cv2.waitKey(1)
-
-       #if k == 27:
-       #    break
+area = 0.0
 
 def cup_finder():
+    global area
     best_outline=[]
     while True:
         ret, frame = cam.read()
@@ -110,7 +52,7 @@ def cup_finder():
         moments = cv2.moments(np.array(best_outline))
 
         area = moments['m00']
-        print(area)
+        #print(area)
         if area >= minArea:
             x = int(moments['m10'] / moments['m00'])
             y = int(moments['m01'] / moments['m00'])
@@ -122,36 +64,40 @@ def cup_finder():
             if (x - center_x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("right")
-                setspeed(1100)
+                setspeedm1(1200)
+                setspeedm2(1200)
                 right()
             elif (center_x - x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("left")
-                setspeed(1100)
+                setspeedm1(1200)
+                setspeedm2(1200)
                 left()
             else:
                 if (area <= 158400):
                     cv2.circle(frame,(int(x),int(y)),5,(255,0,0),-1)
                     #print("forward")
-                    setspeed(850)
+                    setspeedm1(1100)
+                    setspeedm2(1100) 
                     forward()
                 elif (area >= 234400):
                     cv2.circle(frame,(int(x),int(y)),5,(0,0,255),-1)
                     #print("backward")
-                    setspeed(850)
+                    setspeedm1(1100)
+                    setspeedm2(1100) 
                     backward()
                 else:
-                    #print("stop")
-                    setspeed(0)
+                    print("stop")
+                    setspeedm1(0)
+                    setspeedm2(0)
                     stop()
                     print("Cup Localized!")
                     break
-        else:
+        #else:
             #cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
             #cv2.putText(frame,"Locating Cup...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
             print("Locating Cup...")
-            setspeed(1000)
-            left()
+            #left()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         #cv2.namedWindow("Erode",cv2.WINDOW_NORMAL)
@@ -163,3 +109,5 @@ def cup_finder():
     cam.release()
     cv2.destroyAllWindows()
 
+cup_finder()
+print(area)

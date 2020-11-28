@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import pretty_errors
 
-#cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(0)
 
 Ymin = 0
 Ymax = 150
@@ -20,15 +20,18 @@ width = 1280
 height = 880
 center_y = int(height/2)
 center_x = int(width/2)
-max_y = height/5
-max_x = width/4
+max_y = height/6
+max_x = width/5
 
 start_point = (0,1000)
 end_point = (1280,900)
 font_scale = 1.85
 font_pos = (0,945)
 
+area = 0.0
+
 def cup_finder():
+    global area
     best_outline=[]
     while True:
         ret, frame = cam.read()
@@ -49,7 +52,7 @@ def cup_finder():
         moments = cv2.moments(np.array(best_outline))
 
         area = moments['m00']
-        print(area)
+        #print(area)
         if area >= minArea:
             x = int(moments['m10'] / moments['m00'])
             y = int(moments['m01'] / moments['m00'])
@@ -61,36 +64,42 @@ def cup_finder():
             if (x - center_x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("right")
-                setspeed(1100)
+                setspeedm1(1200)
+                setspeedm2(1200)
                 right()
             elif (center_x - x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("left")
-                setspeed(1100)
+                setspeedm1(1200)
+                setspeedm2(1200)
                 left()
             else:
+                stop()
+                break
                 if (area <= 158400):
                     cv2.circle(frame,(int(x),int(y)),5,(255,0,0),-1)
                     #print("forward")
-                    setspeed(850)
-                    forward()
+                    setspeedm1(1100)
+                    setspeedm2(1100) 
+                    #forward()
                 elif (area >= 234400):
                     cv2.circle(frame,(int(x),int(y)),5,(0,0,255),-1)
                     #print("backward")
-                    setspeed(850)
-                    backward()
+                    setspeedm1(1100)
+                    setspeedm2(1100) 
+                    #backward()
                 else:
                     #print("stop")
-                    setspeed(0)
+                    setspeedm1(0)
+                    setspeedm2(0)
                     stop()
                     print("Cup Localized!")
                     break
-        else:
+        #else:
             #cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
             #cv2.putText(frame,"Locating Cup...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
             print("Locating Cup...")
-            setspeed(1000)
-            left()
+            #left()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         #cv2.namedWindow("Erode",cv2.WINDOW_NORMAL)
@@ -101,3 +110,6 @@ def cup_finder():
         #cv2.imshow("Video Output",frame)
     cam.release()
     cv2.destroyAllWindows()
+
+cup_finder()
+print(area)

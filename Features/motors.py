@@ -52,6 +52,30 @@ def forward():
     gpio.output(m2_in2,gpio.HIGH)
     gpio.output(inv,gpio.LOW)
 
+def slight_right():
+    #motor A
+    gpio.output(m1_in1,gpio.LOW)
+    gpio.output(m1_in2,gpio.HIGH)
+    #motor B
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.HIGH)
+    gpio.output(inv,gpio.LOW)
+    pwm.set_pwm(pwm2,0,3000)
+    pwm.sey_pwm(pwm1,0,2800)
+
+def slight_left():
+    #motor A
+    gpio.output(m1_in1,gpio.LOW)
+    gpio.output(m1_in2,gpio.HIGH)
+    #motor B
+    gpio.output(m2_in1,gpio.LOW)
+    gpio.output(m2_in2,gpio.HIGH)
+    gpio.output(inv,gpio.LOW)
+    pwm.set_pwm(pwm2,0,2800)
+    pwm.sey_pwm(pwm1,0,3000)
+
+
+
 def stop():
     #motor A
     gpio.output(m1_in1,gpio.LOW)
@@ -95,6 +119,8 @@ def right():
     gpio.output(m2_in1,gpio.LOW)
     gpio.output(m2_in2,gpio.HIGH)
     gpio.output(inv,gpio.LOW)
+
+
 
 def setspeedm1(speed):
     pwm.set_pwm(pwm2,0,speed)
