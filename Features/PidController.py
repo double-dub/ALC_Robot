@@ -21,15 +21,23 @@ def calculate(m_input):
 
     # Calculate the error signal
     error = set_point - m_input
+    
+    '''
+    error = based on angles
+    pwm = error * something proportional to pwm values  
+
+
+
+    '''
 
     # Integrate the errors as long as the upcoming integrator does
     # not exceed the minimum and maximum output thresholds.
-    if 1300 > abs(total_error + error) * kI > 800:
+    if (abs(total_error + error) * kI < 1300) and (abs(total_error + error) * kI > 800):
         total_error = total_error + error
 
     # Perform the PID calculation
     result = (kP * error) + (kI * total_error) + (kD * (error - prev_error))
-
+    print("result: "+str(result))
     # Save the current error to the previous error for the next cycle.
     prev_error = error
 
@@ -41,11 +49,11 @@ def calculate(m_input):
     # sure the sign of the constrained result matched the original result sign.
     if abs(result) > 1300:
         result = 1300
-        if sign:
+        # if sign:
             # turn back
     elif abs(result) < 800:
         result = 800
-        if sign:
+        # if sign:
             # turn back
 
 
@@ -58,7 +66,7 @@ def pid_reset():
 target = False
 def on_target():
     global target, error
-    if error < abs(0.01 * (current_angle - goal_ang)):
+    if abs(error) < abs(0.01 * (current_angle - goal_ang)):
         target = True
 
 
@@ -80,18 +88,24 @@ while True:
     if val == '1':
         pid_reset()
         current_angle = angle
-        goal_ang = current_angle + 90
+        goal_ang = current_angle - 90
         set_point = goal_ang
 
         while True:
             calculate(angle)
-            setspeedm1(result)
-            setspeedm2(result)
-            left()
-            if not on_target():
+            print(round(result))
+            print(str(error))
+            setspeedm1(round(result))
+            setspeedm2(round(result))
+            print("Turn Left")
+            #left()
+            if on_target():
+                print(str(target))
                 stop()
                 break
 
         print("Final angle is: " + str(angle))
     elif val == '2':
+        print(str(angle))
+    elif val == '3':
         break

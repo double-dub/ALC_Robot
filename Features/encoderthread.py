@@ -86,21 +86,24 @@ def imu_turn90R():
     print("Final angle: " + str(cur_angle) + "\n")
     print("Exited loop\n")    
 
-
+x = 0.75
 def imu_turn90L():
     global angle
-    global error
+    global x
     cur_angle = angle 
-    goal_angle = cur_angle - 86 + error
+    goal_angle = cur_angle - 90
 
     print("Start angle: " + str(cur_angle) + "\n")
     print("Goal angle: " + str(goal_angle) + "\n")
     
+    turn_speed = 600
     while cur_angle > goal_angle:
-        cur_angle = angle 
-        setspeedm1(1100)
-        setspeedm2(1100)
+        # turn_speed = turn_speed - 5
+        x = x + 0.05 
+        setspeedm1(turn_speed)
+        setspeedm2(turn_speed)
         left()
+        cur_angle = angle
 
     stop()
 
