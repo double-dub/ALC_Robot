@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''Demonstrate Python wrapper of C apriltag library by running on camera frames.'''
 from __future__ import division
 from __future__ import print_function
@@ -33,8 +31,8 @@ width = 1280
 height = 880
 center_y = int(height/2)
 center_x = int(width/2)
-max_y = height/5
-max_x = width/4
+max_y = height/6
+max_x = width/5
 
 start_point = (0,1000)
 end_point = (1280,900)
@@ -50,7 +48,8 @@ def robodock():
 
        num_detections = len(detections)
        print('Detected {} tags.\n'.format(num_detections))
-       setspeed(0)
+       setspeedm1(0)
+       setspeedm2(0)
        for i, detection in enumerate(detections):
            #print('Detection {} of {}:'.format(i+1, num_detections))
            #print()
@@ -65,11 +64,16 @@ def robodock():
            pose, e0, e1 = detector.detection_pose(detection,camera_params,tag_size)
            print(pose[2][0])
            if pose[2][0] < -0.1:
+               setspeedm1(950)
+               setspeedm2(950)
                left()
            elif pose[2][0] > 0.1:
+               setspeedm1(950)
+               setspeedm2(950)
                right()    
                if (dis >= 20):
-                   setspeed(850)
+                   setspeedm1(850)
+                   setspeedm2(850)
                    forward()
                elif (dis < 20):
                    stop()
@@ -122,35 +126,45 @@ def cup_finder():
             if (x - center_x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("right")
-                setspeed(1100)
+                setspeedm1(1100)
+                setspeedm2(1100)
                 right()
             elif (center_x - x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("left")
-                setspeed(1100)
+                setspeedm1(1100)
+                setspeedm2(1100)
                 left()
             else:
+                fwrd_short()
+                create_vector()
+                enc_res()
+                print(vector_list)
                 if (area <= 158400):
                     cv2.circle(frame,(int(x),int(y)),5,(255,0,0),-1)
                     #print("forward")
-                    setspeed(850)
-                    forward()
+                    setspeedm1(850)
+                    setspeedm2(850)
+                    #forward()
                 elif (area >= 234400):
                     cv2.circle(frame,(int(x),int(y)),5,(0,0,255),-1)
                     #print("backward")
-                    setspeed(850)
-                    backward()
+                    setspeedm1(850)
+                    setspeedm2(850)
+                    #backward()
                 else:
                     #print("stop")
-                    setspeed(0)
-                    stop()
+                    setspeedm1(0)
+                    setspeedm2(0)
+                    #stop()
                     print("Cup Localized!")
                     break
         else:
             #cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
             #cv2.putText(frame,"Locating Cup...",font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
             print("Locating Cup...")
-            setspeed(1000)
+            setspeedm1(1000)
+            setspeedm2(1000)
             left()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -162,4 +176,3 @@ def cup_finder():
         #cv2.imshow("Video Output",frame)
     cam.release()
     cv2.destroyAllWindows()
-

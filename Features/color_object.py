@@ -61,6 +61,8 @@ def cup_finder():
             #cv2.rectangle(frame,start_point,end_point,(255,255,255),-1)
             #print("Position: x - "+str(int(x))+" y - "+str(int(y)))
             #cv2.putText(frame,"Position: "+str(int(x))+" , "+str(int(y)),font_pos,cv2.FONT_HERSHEY_SIMPLEX,font_scale,(0,0,0))
+            
+            
             if (x - center_x) > max_x:
                 cv2.line(frame,(int(x),int(y)),(center_x,center_y),(0,0,255),1)
                 #print("right")

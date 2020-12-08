@@ -75,7 +75,7 @@ def extend_ball():
     #pwm.set_pwm(2, 0, servo_min)
     i = 650
     j = 650
-    while (150<=i<=650):
+    while (160<=i<=650):
         
   
         if (425<=j<=650):
@@ -93,7 +93,7 @@ def extend_ball():
             print("j=:",j)
             i -=1
             time.sleep(.002)
-        if i== 150:
+        if i== 160:
             print("test")
             break
 
@@ -113,17 +113,17 @@ def extend_cup():
             i-=1
             print("i=:",i)
             print("j=:",j)
-            time.sleep(.004)
+            time.sleep(.006)
         else:
             #whichever joint is still moving after one of them stops
             pwm.set_pwm(11, 0, i)
             print("i=:",i)
             print("j=:",j)
             i -=1
-            time.sleep(.004)
+            time.sleep(.01)
         if i== 200:
-            stop_servo(11)
-            stop_servo(12)
+            #stop_servo(11)
+            #stop_servo(12)
             break
 
 
@@ -143,7 +143,7 @@ def grab_cup():
     time.sleep(.5)
     pwm.set_pwm(14, 0, 300)
     time.sleep(.5)
-    pwm.set_pwm(14, 0, 575)
+    pwm.set_pwm(14, 0, 585)
     time.sleep(1)
     pwm.set_pwm(14, 4095, 0)
     time.sleep(1)
@@ -248,5 +248,3 @@ def stop_servo(ch):
 def dig_stop(ch):
     pwm.set_pwm(ch, 4095, 0)
     time.sleep(.5)
-
-    

@@ -1,5 +1,5 @@
 import numpy as np
-import  cv2
+import cv2
 import math
 from scipy.optimize import fsolve
 ss = 0.5
@@ -61,23 +61,11 @@ def get_Kmat(H):
     return rvec,tvec
 
 def get_pose_point(H):
-    """
-    将空间坐标转换成相机坐标
-    Trans the point to camera point
-    :param H: homography
-    :return:point
-    """
     rvec, tvec =  get_Kmat(H)
     point, jac = cv2.projectPoints(src, rvec, tvec, Kmat, disCoeffs)
     return np.int32(np.reshape(point,[4,2]))
 
 def get_pose_point_noroate(H):
-    """
-    将空间坐标转换成相机坐标但是不旋转
-    Trans the point to camera point but no rotating
-    :param H: homography
-    :return:point
-    """
     rvec, tvec = get_Kmat(H)
     point, jac = cv2.projectPoints(src, np.zeros(rvec.shape), tvec, Kmat, disCoeffs)
     return np.int32(np.reshape(point,[4,2]))

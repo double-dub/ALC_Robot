@@ -99,7 +99,8 @@ def cup_finder():
 #be lenient when distance is far
 def center():
     while True:
-        if x > 1000:
+        cup_finder()
+        if x > 900:
             setspeedm1(800)
             setspeedm2(800)
             right()
@@ -109,23 +110,23 @@ def center():
             left()
         else:
             if x > 580:
-                setspeedm1(780)
-                setspeedm2(780)
+                setspeedm1(800)
+                setspeedm2(800)
                 right()
             elif x < 540:
-                setspeedm1(780)
-                setspeedm2(780)
+                setspeedm1(800)
+                setspeedm2(800)
                 left()
             else:
                 stop()
                 time.sleep(2)
                 if x > 580:
-                    setspeedm1(780)
-                    setspeedm2(780)
+                    setspeedm1(800)
+                    setspeedm2(800)
                     right()
                 elif x < 540:
-                    setspeedm1(780)
-                    setspeedm2(780)
+                    setspeedm1(800)
+                    setspeedm2(800)
                     left()
                     stop()
                 else:
@@ -185,8 +186,10 @@ while True:
     print("Running...")
     val = input()
     if val == 'moments':
+        cup_finder()
         print(moments)
     elif val == 'area':
+        cup_finder()
         print("Area of Cup: "+str(area))
     elif val == 'xy':
         cup_finder()
