@@ -1,5 +1,5 @@
 # ALC Robot
-Automated Litter Collector Robot
+Autonomous Litter Collector Robot
 
 # Sacramento State 2020
 Team:
