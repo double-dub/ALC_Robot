@@ -11,3 +11,4 @@ Team:
 [Senior Design Presentation Video](https://www.youtube.com/watch?v=QL7SbdBDqHc&feature=youtu.be "Youtube Link")
 
 ![IMAGE](https://github.com/Rickysmm/ALC_Robot/blob/master/ALC_Robot.png)
+![IMAGE](https://github.com/Rickysmm/ALC_Robot/blob/master/AlphaTeamPoster_Fall2020.pdf)
