@@ -1,7 +1,7 @@
 # ALC Robot
 Automated Litter Collector Robot
-Sacramento State 2020
 
+#Sacramento State 2020
 Team:
 - Walter Warneke
 - Ricardo Martinez
